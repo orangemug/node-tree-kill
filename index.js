@@ -6,8 +6,7 @@ var isWindows = process.platform === 'win32';
 
 module.exports = function (pid, signal, done) {
     if (isWindows) {
-        exec('taskkill /pid ' + pid + ' /T /F');
-        if(done) process.nextTick(done);
+        exec('taskkill /pid ' + pid + ' /T /F', done);
     } else {
         var tree = {};
         tree[pid] = [];
