@@ -4,9 +4,10 @@ var exec = childProcess.exec;
 var once = require('once');
 var isWindows = process.platform === 'win32';
 
-module.exports = function (pid, signal) {
+module.exports = function (pid, signal, done) {
     if (isWindows) {
         exec('taskkill /pid ' + pid + ' /T /F');
+        if(done) process.nextTick(done);
     } else {
         var tree = {};
         tree[pid] = [];
@@ -14,6 +15,7 @@ module.exports = function (pid, signal) {
         pidsToProcess[pid] = 1;
         buildProcessTree(pid, tree, pidsToProcess, function () {
             killAll(tree, signal);
+            if(done) done();
         });
     }
 }
